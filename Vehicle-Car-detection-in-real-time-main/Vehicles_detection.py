@@ -1,0 +1,37 @@
+import cv2  # Import the OpenCV library
+
+# Open a video file (video.avi) for reading
+cap = cv2.VideoCapture('car_video.avi')
+
+# Load the pre-trained car classifier (Haar cascade)
+car_cascade = cv2.CascadeClassifier('cars.xml')
+
+# Infinite loop to process each frame of the video
+while True:
+    # Read a frame from the video
+    ret, frame = cap.read()
+    
+    # Check if the frame was read correctly
+    if not ret:
+        break  # Exit the loop if there are no more frames
+    
+    # Convert the frame to grayscale (necessary for the Haar cascade)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+    # Detect cars in the grayscale frame
+    cars = car_cascade.detectMultiScale(gray, 1.1, 1)
+    
+    # Draw rectangles around each detected car
+    for (x, y, w, h) in cars:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+    
+    # Display the frame with detected cars
+    cv2.imshow('Output', frame)
+    
+    # Break the loop if the 'Esc' key (ASCII code 27) is pressed
+    if cv2.waitKey(1) == 27:
+        break
+
+# Release the video capture object and close all OpenCV windows
+cap.release()
+cv2.destroyAllWindows()
